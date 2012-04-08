@@ -56,6 +56,7 @@ Groovegrid.views.App = Backbone.View.extend({
   el: '#app',
   setContentView: function(view) {
     this.currentGrid = view;
+    this.$el.empty();
     this.$el.html(view.render().el);
   }
 });
