@@ -33,7 +33,10 @@ Groovegrid.Router = Backbone.Router.extend({
     ':gridName': 'gridView'
   }, 
   index: function() {
-    var view = new Groovegrid.views.Index;
+    var view = new Groovegrid.views.Index({
+      tagName: 'div',
+      id: 'index'
+    });
     Groovegrid.app.setContentView(view);
   },
   gridView: function(gridName) {
