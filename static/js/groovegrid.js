@@ -126,6 +126,8 @@ Groovegrid.views.Search = Backbone.View.extend({
         '&v=2' + '&alt=jsonc';
       this.model.url = queryURL;
       this.model.fetch();
+    } else {
+      this.$('#results').empty();
     }
   },
   setResult: function(model) {
