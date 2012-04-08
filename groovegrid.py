@@ -1,8 +1,8 @@
-from flask import Flask
+from flask import Flask, render_template
 from flaskext.mongoalchemy import MongoAlchemy
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='views')
 app.config['MONGOALCHEMY_DATABASE'] = 'groovegrid_dev'
 db = MongoAlchemy(app)
 
@@ -37,7 +37,7 @@ class Tile(db.Document):
 
 @app.route('/')
 def index():
-  return "Groovegrid"
+  return render_template('index.html')
 
 def start():
   app.run(debug=True)
