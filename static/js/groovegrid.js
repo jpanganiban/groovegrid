@@ -62,9 +62,19 @@ Groovegrid.views.App = Backbone.View.extend({
 });
 
 Groovegrid.views.Index = Backbone.View.extend({
+  events: {
+    'click input[type=submit]': 'goGrid'
+  },
   render: function() {
     this.$el.html(Groovegrid.templates.index());
     return this;
+  },
+  goGrid: function(e) {
+    e.preventDefault();
+    var gridName = this.$('input[type=text]').val();
+    // FIXME: The router should be able to set the 
+    // route correctly.
+    window.location = '/' + gridName;
   }
 });
 
