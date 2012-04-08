@@ -33,9 +33,23 @@
     </script>
 
     <script id=grid type=text/html>
+      <div id=search></div>
       <div id=info></div>
       <div id=now-playing></div>
       <div id=playlist></div>
     </script>
+
+    <script id=search type=text/html>
+      <input type=text placeholder='Search a youtube video' />
+      <div id=results></div>
+    </script>
+
+    <script id=searchResult type=text/html>
+      <img src=<%- thumbnail.sqDefault %> />
+      <span class=title><%- title %></span>
+      <span class=uploader><%- uploader %></span>
+      <span class=length><%- duration %></span>
+    </script>
+
   </body>
 </html>

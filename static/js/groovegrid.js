@@ -39,6 +39,10 @@ Groovegrid.Router = Backbone.Router.extend({
   gridView: function(gridName) {
     var view = new Groovegrid.views.GridView;
     Groovegrid.app.setContentView(view);
+
+    new Groovegrid.views.Search({
+      el: '#search'
+    }).render();
   }
 });
 
@@ -54,6 +58,79 @@ Groovegrid.views.Index = Backbone.View.extend({
   render: function() {
     this.$el.html(Groovegrid.templates.index());
     return this;
+  }
+});
+
+Groovegrid.models.SearchResult = Backbone.Model.extend();
+
+Groovegrid.collections.SearchResults = Backbone.Collection.extend();
+
+Groovegrid.models.SearchQuery = Backbone.Model.extend({
+  parse: function(response) {
+    response.result = new Groovegrid.collections.SearchResults(response.data.items);
+    return response;
+  }
+});
+
+Groovegrid.views.SearchResult = Backbone.View.extend({
+  render: function() {
+    var data = this.model.toJSON();
+    console.log(data);
+    this.$el.html(Groovegrid.templates.searchResult(data));
+    return this;
+  }
+});
+
+Groovegrid.views.SearchResults = Backbone.View.extend({
+  el: '#results',
+  initialize: function() {
+    this.collection.on('reset', this.render, this);
+  },
+  add: function(model) {
+    var view = new Groovegrid.views.SearchResult({
+      model: model
+    }).render();
+    this.$el.append(view.el);
+  },
+  render: function(collection) {
+    var collection = collection || this.collection;
+    this.$el.empty();
+    collection.each(this.add, this);
+    return this;
+  }
+});
+
+Groovegrid.views.Search = Backbone.View.extend({
+  events: {
+    'blur input[type=text]': 'searchVideo'
+  },
+  initialize: function() {
+    this.model = new Groovegrid.models.SearchQuery;
+    this.model.on('change', this.setResult, this);
+  },
+  render: function() {
+    this.$el.html(Groovegrid.templates.search());
+    return this;
+  },
+  searchVideo: function() {
+    var searchURL = 'https://gdata.youtube.com/feeds/api/videos';
+    var query = this.$('input[type=text]').val();
+    // set max results to 10
+    var maxResults = '10';
+    var searchResponse;
+    if (!_.isBlank(query)) {
+      // Set query url
+      var queryURL = searchURL + '?q=' + query + 
+        '&max-results=' + maxResults + 
+        '&v=2' + '&alt=jsonc';
+      this.model.url = queryURL;
+      this.model.fetch();
+    }
+  },
+  setResult: function(model) {
+    new Groovegrid.views.SearchResults({
+      collection: model.get('result')
+    }).render();
   }
 });
 
