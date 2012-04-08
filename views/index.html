@@ -5,8 +5,31 @@
     <script type=text/javascript src=/static/js/underscore.js></script>
     <script type=text/javascript src=/static/js/underscore-string.js></script>
     <script type=text/javascript src=/static/js/backbone.js></script>
+    <script type=text/javascript src=/static/js/groovegrid.js></script>
+    <script type=text/javascript>
+      $(document).ready(function() {
+        // Attach underscore-string to underscore
+        _.mixin(_.str.exports());
+        // Grab templates
+        Groovegrid.templates.grab();
+        // Initialize application
+        Groovegrid.app = new Groovegrid.views.App({
+          router: new Groovegrid.Router
+        });
+        // Start backbone routing
+        Backbone.history.start({pushState: true});
+      });
+    </script>
   </head>
+
   <body>
-    <h1>Groovegrid</h1>
+    <div id=groovegrid></div>
+
+    <script id=index type=text/html>
+      <h1>Groovegrid</h1>
+      <p>Youtube playlists made awesome!</p>
+      <input type=text placeholder='Enter a grid name' />
+      <input type=submit value='Go!' />
+    </script>
   </body>
 </html>
