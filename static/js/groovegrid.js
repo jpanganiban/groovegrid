@@ -96,7 +96,9 @@ Groovegrid.views.SearchResult = Backbone.View.extend({
       duration: data.duration
     }, {wait: true});
     // Close results when entry is added
-    this.options.parentView.$el.empty();
+    var parentView = this.options.parentView;
+    parentView.$el.empty();
+    parentView.options.searchView.$('input[type=text]').val('');
   }
 });
 
@@ -151,7 +153,8 @@ Groovegrid.views.Search = Backbone.View.extend({
   },
   setResult: function(model) {
     new Groovegrid.views.SearchResults({
-      collection: model.get('result')
+      collection: model.get('result'),
+      searchView: this
     }).render();
   }
 });
