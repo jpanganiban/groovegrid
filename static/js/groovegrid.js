@@ -29,10 +29,15 @@ Groovegrid.templates = {
 
 Groovegrid.Router = Backbone.Router.extend({
   routes: {
-    '': 'index'
+    '': 'index',
+    ':gridName': 'gridView'
   }, 
   index: function() {
     var view = new Groovegrid.views.Index;
+    Groovegrid.app.setContentView(view);
+  },
+  gridView: function(gridName) {
+    var view = new Groovegrid.views.GridView;
     Groovegrid.app.setContentView(view);
   }
 });
@@ -48,6 +53,13 @@ Groovegrid.views.App = Backbone.View.extend({
 Groovegrid.views.Index = Backbone.View.extend({
   render: function() {
     this.$el.html(Groovegrid.templates.index());
+    return this;
+  }
+});
+
+Groovegrid.views.GridView = Backbone.View.extend({
+  render: function() {
+    this.$el.html(Groovegrid.templates.grid());
     return this;
   }
 });

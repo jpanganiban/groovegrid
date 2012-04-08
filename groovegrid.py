@@ -36,7 +36,8 @@ class Tile(db.Document):
 
 
 @app.route('/')
-def index():
+@app.route('/<grid_name>')
+def index(grid_name=None):
   return render_template('index.html')
 
 def start():
