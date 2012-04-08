@@ -32,9 +32,16 @@
       <input type=submit value='Go!' />
     </script>
 
+    <script id=tile type=text/html>
+      <img src=<%- thumbnail_url %> />
+      <span class=title><%- title %></span>
+      <span class=uploader><%- uploader %></span>
+      <span class=duration><%- duration %></span>
+    </script>
+
     <script id=grid type=text/html>
       <div id=search></div>
-      <div id=grid></div>
+      <div id=tiles></div>
     </script>
 
     <script id=search type=text/html>

@@ -37,6 +37,7 @@ Groovegrid.Router = Backbone.Router.extend({
     Groovegrid.app.setContentView(view);
   },
   gridView: function(gridName) {
+    Groovegrid.app.currentGridName = gridName;
     var view = new Groovegrid.views.GridView({
       el: '#groovegrid'
     });
@@ -51,7 +52,7 @@ Groovegrid.Router = Backbone.Router.extend({
 Groovegrid.views.App = Backbone.View.extend({
   el: '#app',
   setContentView: function(view) {
-    this.contentView = view;
+    this.currentGrid = view;
     this.$el.html(view.render().el);
   }
 });
@@ -75,10 +76,27 @@ Groovegrid.models.SearchQuery = Backbone.Model.extend({
 });
 
 Groovegrid.views.SearchResult = Backbone.View.extend({
+  events: {
+    'click': 'addTile'
+  },
   render: function() {
     var data = this.model.toJSON();
     this.$el.html(Groovegrid.templates.searchResult(data));
     return this;
+  },
+  addTile: function(e) {
+    e.preventDefault();
+    var data = this.model.toJSON();
+    var tiles = Groovegrid.app.currentGrid.tiles.collection;
+    tiles.create({
+      video_id: data.id,
+      title: data.title,
+      thumbnail_url: data.thumbnail.sqDefault,
+      uploader: data.uploader,
+      duration: data.duration
+    }, {wait: true});
+    // Close results when entry is added
+    this.options.parentView.$el.empty();
   }
 });
 
@@ -89,7 +107,8 @@ Groovegrid.views.SearchResults = Backbone.View.extend({
   },
   add: function(model) {
     var view = new Groovegrid.views.SearchResult({
-      model: model
+      model: model,
+      parentView: this
     }).render();
     this.$el.append(view.el);
   },
@@ -137,10 +156,68 @@ Groovegrid.views.Search = Backbone.View.extend({
   }
 });
 
+Groovegrid.models.Tile = Backbone.Model.extend();
+
+Groovegrid.collections.Tiles = Backbone.Collection.extend({
+  model: Groovegrid.models.Tile,
+  url: function() {
+    return '/api/grids/' + Groovegrid.app.currentGridName + '/tiles';
+  }
+});
+
+Groovegrid.models.Grid = Backbone.Model.extend({
+  url: function() {
+    return '/api/grids/' + Groovegrid.app.currentGridName;
+  },
+  parse: function(response) {
+    response.tiles = new Groovegrid.collections.Tiles(response.tiles);
+    return response;
+  }
+});
+
+Groovegrid.views.Tile = Backbone.View.extend({
+  render: function() {
+    var data = this.model.toJSON();
+    this.$el.html(Groovegrid.templates.tile(data));
+    return this;
+  }
+});
+
+Groovegrid.views.Tiles = Backbone.View.extend({
+  initialize: function() {
+    this.collection.on('reset', this.render, this);
+    this.collection.on('add', this.add, this);
+  },
+  add: function(model) {
+    var view = new Groovegrid.views.Tile({
+      className: 'tile',
+      model: model
+    }).render();
+    this.$el.append(view.el);
+  },
+  render: function(collection) {
+    var collection = collection || this.collection;
+    this.$el.empty();
+    collection.each(this.add, this);
+    return this;
+  }
+});
+
 Groovegrid.views.GridView = Backbone.View.extend({
+  initialize: function() {
+    this.model = new Groovegrid.models.Grid;
+    this.model.on('change', this.renderModel, this);
+    this.model.fetch();
+  },
   render: function() {
     this.$el.html(Groovegrid.templates.grid());
     return this;
+  },
+  renderModel: function(model) {
+    this.tiles = new Groovegrid.views.Tiles({
+      el: '#tiles',
+      collection: model.get('tiles')
+    }).render();
   }
 });
 
