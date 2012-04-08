@@ -37,7 +37,9 @@ Groovegrid.Router = Backbone.Router.extend({
     Groovegrid.app.setContentView(view);
   },
   gridView: function(gridName) {
-    var view = new Groovegrid.views.GridView;
+    var view = new Groovegrid.views.GridView({
+      el: '#groovegrid'
+    });
     Groovegrid.app.setContentView(view);
 
     new Groovegrid.views.Search({
@@ -47,7 +49,7 @@ Groovegrid.Router = Backbone.Router.extend({
 });
 
 Groovegrid.views.App = Backbone.View.extend({
-  el: '#groovegrid',
+  el: '#app',
   setContentView: function(view) {
     this.contentView = view;
     this.$el.html(view.render().el);
@@ -75,7 +77,6 @@ Groovegrid.models.SearchQuery = Backbone.Model.extend({
 Groovegrid.views.SearchResult = Backbone.View.extend({
   render: function() {
     var data = this.model.toJSON();
-    console.log(data);
     this.$el.html(Groovegrid.templates.searchResult(data));
     return this;
   }
