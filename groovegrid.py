@@ -71,6 +71,14 @@ def api_grid_tiles(grid_name):
     tile.save()
     return jsonify(tile.to_dict())
 
+
+@app.route('/api/grids/<grid_name>/tiles/<tile_id>', methods=['DELETE'])
+def api_grid_tile(grid_name, tile_id):
+  grid = Grid.query.filter_by(name=grid_name).first()
+  tile = Tile.query.filter_by(grid_id=str(grid.mongo_id), mongo_id=tile_id).first()
+  tile.remove()
+  return ''
+
 @app.route('/')
 @app.route('/<grid_name>')
 def index(grid_name=None):

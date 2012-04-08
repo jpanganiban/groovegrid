@@ -176,10 +176,18 @@ Groovegrid.models.Grid = Backbone.Model.extend({
 });
 
 Groovegrid.views.Tile = Backbone.View.extend({
+  events: {
+    'click .delete': 'removeTile'
+  },
   render: function() {
     var data = this.model.toJSON();
     this.$el.html(Groovegrid.templates.tile(data));
     return this;
+  },
+  removeTile: function(e) {
+    e.preventDefault();
+    this.model.destroy();
+    this.remove();
   }
 });
 
