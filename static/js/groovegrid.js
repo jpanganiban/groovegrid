@@ -40,15 +40,13 @@ Groovegrid.Router = Backbone.Router.extend({
     Groovegrid.app.setContentView(view);
   },
   gridView: function(gridName) {
+    // Initialize player here
+    var params = { allowScriptAccess: 'always' };
+    var atts = { id: 'groovegridPlayer' };
+    swfobject.embedSWF('http://www.youtube.com/apiplayer?' +
+                       'version=3&enablejsapi=1',
+                       'player', '480', '295', '9', null, null, params, atts);
     Groovegrid.app.currentGridName = gridName;
-    var view = new Groovegrid.views.GridView({
-      el: '#groovegrid'
-    });
-    Groovegrid.app.setContentView(view);
-
-    new Groovegrid.views.Search({
-      el: '#search'
-    }).render();
   }
 });
 
@@ -198,7 +196,7 @@ Groovegrid.views.Controller = Backbone.View.extend({
     'click .pause': 'pause'
   },
   initialize: function(options) {
-    this.player = options.player
+    this.player = options.player;
   },
   render: function() {
     this.$el.html(Groovegrid.templates.controller);
@@ -215,20 +213,8 @@ Groovegrid.views.Controller = Backbone.View.extend({
 });
 
 Groovegrid.views.PlayerView = Backbone.View.extend({
-  queue: [],
-  initialize: function() {
-    var params = { allowScriptAccess: 'always' };
-    var atts = { id: 'ytPlayer' };
-    swfobject.embedSWF('http://www.youtube.com/apiplayer?' +
-                       'version=3&enablejsapi=1&playerapiid=player1',
-                       'player', '480', '295', '9', null, null, params, atts, _.bind(this.onReady, this));
-  },
-  onReady: function() {
-    this.player = document.getElementById('ytPlayer');
-    new Groovegrid.views.Controller({
-      el: '#controller',
-      player: this.player
-    }).render();
+  initialize: function(options) {
+    this.player = options.player;
   },
   loadVideo: function(videoID) {
     this.player.loadVideoById(videoID);
@@ -267,7 +253,6 @@ Groovegrid.views.Tiles = Backbone.View.extend({
     this.playerView = options.playerView;
   },
   add: function(model) {
-    this.playerView.queue.push(model.get('video_id'));
     var view = new Groovegrid.views.Tile({
       className: 'tile',
       model: model,
@@ -284,14 +269,17 @@ Groovegrid.views.Tiles = Backbone.View.extend({
 });
 
 Groovegrid.views.GridView = Backbone.View.extend({
-  initialize: function() {
+  initialize: function(options) {
     this.model = new Groovegrid.models.Grid;
     this.model.on('change', this.renderModel, this);
     this.model.fetch();
+    this.player = options.player;
   },
   render: function() {
     this.$el.html(Groovegrid.templates.grid());
-    this.playerView = new Groovegrid.views.PlayerView();
+    this.playerView = new Groovegrid.views.PlayerView({
+      player: this.player
+    });
     return this;
   },
   renderModel: function(model) {
@@ -304,3 +292,19 @@ Groovegrid.views.GridView = Backbone.View.extend({
 });
 
 })(jQuery);
+
+function onYouTubePlayerReady() {
+  var player = document.getElementById('groovegridPlayer')
+  var view = new Groovegrid.views.GridView({
+    el: '#groovegrid',
+    player: player
+  });
+  Groovegrid.app.setContentView(view);
+  new Groovegrid.views.Controller({
+    el: '#controller',
+    player: player
+  }).render();
+  new Groovegrid.views.Search({
+    el: '#search'
+  }).render();
+}
