@@ -85,4 +85,4 @@ def index(grid_name=None):
   return render_template('index.html')
 
 def start():
-  app.run(debug=True)
+  app.run(debug=True, port=51000)
