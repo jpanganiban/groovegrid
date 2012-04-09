@@ -49,8 +49,6 @@ Groovegrid.Router = Backbone.Router.extend({
     new Groovegrid.views.Search({
       el: '#search'
     }).render();
-
-    Groovegrid.app.player = new Groovegrid.views.Player().render();
   }
 });
 
@@ -216,7 +214,8 @@ Groovegrid.views.Controller = Backbone.View.extend({
   }
 });
 
-Groovegrid.views.Player = Backbone.View.extend({
+Groovegrid.views.PlayerView = Backbone.View.extend({
+  queue: [],
   initialize: function() {
     var params = { allowScriptAccess: 'always' };
     var atts = { id: 'ytPlayer' };
@@ -241,6 +240,9 @@ Groovegrid.views.Tile = Backbone.View.extend({
     'click': 'playTile',
     'click .delete': 'removeTile'
   },
+  initialize: function(options) {
+    this.playerView = options.playerView;
+  },
   render: function() {
     var data = this.model.toJSON();
     this.$el.html(Groovegrid.templates.tile(data));
@@ -254,19 +256,22 @@ Groovegrid.views.Tile = Backbone.View.extend({
   playTile: function(e) {
     e.preventDefault();
     e.stopPropagation();
-    Groovegrid.app.player.loadVideo(this.model.get('video_id'));
+    this.playerView.loadVideo(this.model.get('video_id'));
   }
 });
 
 Groovegrid.views.Tiles = Backbone.View.extend({
-  initialize: function() {
+  initialize: function(options) {
     this.collection.on('reset', this.render, this);
     this.collection.on('add', this.add, this);
+    this.playerView = options.playerView;
   },
   add: function(model) {
+    this.playerView.queue.push(model.get('video_id'));
     var view = new Groovegrid.views.Tile({
       className: 'tile',
-      model: model
+      model: model,
+      playerView: this.playerView
     }).render();
     this.$el.append(view.el);
   },
@@ -286,12 +291,14 @@ Groovegrid.views.GridView = Backbone.View.extend({
   },
   render: function() {
     this.$el.html(Groovegrid.templates.grid());
+    this.playerView = new Groovegrid.views.PlayerView();
     return this;
   },
   renderModel: function(model) {
     this.tiles = new Groovegrid.views.Tiles({
       el: '#tiles',
-      collection: model.get('tiles')
+      collection: model.get('tiles'),
+      playerView: this.playerView
     }).render();
   }
 });
