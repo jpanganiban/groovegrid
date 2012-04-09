@@ -194,6 +194,28 @@ Groovegrid.models.Grid = Backbone.Model.extend({
   }
 });
 
+Groovegrid.views.Controller = Backbone.View.extend({
+  events: {
+    'click .play': 'play',
+    'click .pause': 'pause'
+  },
+  initialize: function(options) {
+    this.player = options.player
+  },
+  render: function() {
+    this.$el.html(Groovegrid.templates.controller);
+    return this;
+  },
+  play: function(e) {
+    e.preventDefault();
+    this.player.playVideo();
+  },
+  pause: function(e) {
+    e.preventDefault();
+    this.player.pauseVideo();
+  }
+});
+
 Groovegrid.views.Player = Backbone.View.extend({
   initialize: function() {
     var params = { allowScriptAccess: 'always' };
@@ -204,6 +226,10 @@ Groovegrid.views.Player = Backbone.View.extend({
   },
   onReady: function() {
     this.player = document.getElementById('ytPlayer');
+    new Groovegrid.views.Controller({
+      el: '#controller',
+      player: this.player
+    }).render();
   },
   loadVideo: function(videoID) {
     this.player.loadVideoById(videoID);
