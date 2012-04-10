@@ -39,6 +39,7 @@ Groovegrid.Router = Backbone.Router.extend({
       gridName: gridName
     }));
     Groovegrid.app.currentGrid = gridName;
+    new Groovegrid.views.Search().render();
   }
 });
 
@@ -47,6 +48,72 @@ Groovegrid.views.App = Backbone.View.extend({
   setView: function(view) {
     this.currentView = view;
     this.$el.html(view.render().el);
+  }
+});
+
+Groovegrid.models.SearchResult = Backbone.Model.extend();
+
+Groovegrid.collections.SearchResults = Backbone.Collection.extend({
+  model: Groovegrid.models.SearchResult
+});
+
+Groovegrid.models.SearchQuery = Backbone.Model.extend({
+  parse: function(response) {
+    response.results = new Groovegrid.collections.SearchResults(response);
+    return response;
+  }
+});
+
+Groovegrid.views.SearchResult = Backbone.View.extend({
+  tagName: 'div',
+  className: 'search-result',
+  render: function() {
+    var data = this.model.toJSON();
+    this.$el.html(Groovegrid.templates.searchResult(data));
+    return this;
+  }
+});
+
+Groovegrid.views.SearchResults = Backbone.View.extend({
+  el: '#results',
+  initialize: function() {
+  },
+  add: function(model) {
+    var view = new Groovegrid.views.SearchResult({
+      model: model
+    });
+    this.$el.append(view.render().el);
+  },
+  render: function() {
+    this.$el.empty();
+    this.collection.each(this.add, this);
+    return this;
+  }
+});
+
+Groovegrid.views.Search = Backbone.View.extend({
+  el: '#search',
+  events: {
+    'blur input[type=text]': 'search'
+  },
+  initialize: function() {
+    this.model = new Groovegrid.models.SearchQuery();
+    this.queryUrl = 'http://api.soundcloud.com/tracks.json?client_id=ea059f15567c5e19dd370a48b0fab0d2';
+  },
+  render: function() {
+    this.$el.html(Groovegrid.templates.search());
+    return this;
+  },
+  search: function() {
+    var queryString = this.$('input[type=text]').val();
+    this.model.url = _.bind(function() {
+      return this.queryUrl + '&q=' + queryString;
+    }, this);
+    this.model.fetch({success: _.bind(function(response) {
+      this.results = new Groovegrid.views.SearchResults({
+        collection: response.get('results')
+      }).render();
+    }, this)});
   }
 });
 

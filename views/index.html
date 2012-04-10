@@ -29,11 +29,22 @@
 
     <script id=grid type=text/html>
       <h1>Grid: <%- gridName %></h1>
+      <div id=search></div>
       <div id=tiles></div>
     </script>
 
     <script id=tile type=text/html>
       <span class=title><%- title %></span>
+    </script>
+
+    <script id=searchResult type=text/html>
+      <img src=<%- artwork_url %> />
+      <span class=title><%- title %></span>
+    </script>
+
+    <script id=search type=text/html>
+      <input type=text placeholder='Search for a track...' />
+      <div id=results></div>
     </script>
 
   </body>
