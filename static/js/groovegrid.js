@@ -294,7 +294,7 @@ Groovegrid.views.GridView = Backbone.View.extend({
 })(jQuery);
 
 function onYouTubePlayerReady() {
-  var player = document.getElementById('groovegridPlayer')
+  var player = document.getElementById('groovegridPlayer');
   var view = new Groovegrid.views.GridView({
     el: '#groovegrid',
     player: player
