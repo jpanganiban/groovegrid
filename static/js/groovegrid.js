@@ -156,6 +156,7 @@ Groovegrid.views.Tiles = Backbone.View.extend({
   },
   render: function(collection) {
     var collection = collection || this.collection
+    this.$el.empty();
     collection.each(this.add, this);
     return this;
   }
