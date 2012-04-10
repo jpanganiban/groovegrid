@@ -4,7 +4,6 @@
     <script type=text/javascript src=/static/js/jquery.js></script>
     <script type=text/javascript src=/static/js/underscore.js></script>
     <script type=text/javascript src=/static/js/underscore-string.js></script>
-    <script type=text/javascript src=/static/js/swfobject.js></script>
     <script type=text/javascript src=/static/js/backbone.js></script>
     <script type=text/javascript src=/static/js/groovegrid.js></script>
     <script type=text/javascript>
@@ -24,47 +23,12 @@
   </head>
 
   <body>
-    <div id=player></div>
+
     <div id=app>
-      <div id=groovegrid></div>
     </div>
 
-    <script id=index type=text/html>
-      <h1>Groovegrid</h1>
-      <p>Youtube playlists made awesome!</p>
-      <input type=text placeholder='Enter a grid name' />
-      <input type=submit value='Go!' />
-    </script>
-
-    <script id=tile type=text/html>
-      <img src=<%- thumbnail_url %> />
-      <span class=title><%- title %></span>
-      <span class=uploader><%- uploader %></span>
-      <span class=duration><%- duration %></span>
-      <a class=delete href=#>x</a>
-    </script>
-
-    <script id=controller type=text/html>
-      <a class=play href=#>Play</a>
-      <a class=pause href=#>Pause</a>
-    </script>
-
     <script id=grid type=text/html>
-      <div id=search></div>
-      <div id=tiles></div>
-      <div id=controller></div>
-    </script>
-
-    <script id=search type=text/html>
-      <input type=text placeholder='Search a youtube video' />
-      <div id=results></div>
-    </script>
-
-    <script id=searchResult type=text/html>
-      <img src=<%- thumbnail.sqDefault %> />
-      <span class=title><%- title %></span>
-      <span class=uploader><%- uploader %></span>
-      <span class=length><%- duration %></span>
+      <h1>Grid: <%- gridName %></h1>
     </script>
 
   </body>
