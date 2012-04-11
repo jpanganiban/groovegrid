@@ -52,5 +52,10 @@ def api_grid(grid_name=None):
 def index(grid_name=None):
   return render_template('index.html')
 
+@app.route('/sandbox')
+def sandbox():
+  # This is a route to test layout
+  return render_template('grid.html')
+
 def start():
   app.run(debug=True, port=51000)
