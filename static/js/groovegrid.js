@@ -67,20 +67,39 @@ Groovegrid.models.SearchQuery = Backbone.Model.extend({
 Groovegrid.views.SearchResult = Backbone.View.extend({
   tagName: 'div',
   className: 'search-result',
+  events: {
+    'click': 'addTrack'
+  },
   render: function() {
     var data = this.model.toJSON();
     this.$el.html(Groovegrid.templates.searchResult(data));
+    this.tiles = Groovegrid.app.currentView.tiles.collection;
     return this;
+  },
+  addTrack: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var data = this.model.toJSON();
+    this.tiles.create({
+      artwork_url: data.artwork_url || '',
+      duration: data.duration,
+      song_id: data.id,
+      song_uri: data.uri,
+      stream_url: data.stream_url,
+      title: data.title,
+      user: data.user.username,
+    });
+    this.options.resultsView.$el.empty();
+    this.options.resultsView.options.searchView.$('input[type=text]').val('');
   }
 });
 
 Groovegrid.views.SearchResults = Backbone.View.extend({
   el: '#results',
-  initialize: function() {
-  },
   add: function(model) {
     var view = new Groovegrid.views.SearchResult({
-      model: model
+      model: model,
+      resultsView: this
     });
     this.$el.append(view.render().el);
   },
@@ -98,7 +117,9 @@ Groovegrid.views.Search = Backbone.View.extend({
   },
   initialize: function() {
     this.model = new Groovegrid.models.SearchQuery();
-    this.queryUrl = 'http://api.soundcloud.com/tracks.json?client_id=ea059f15567c5e19dd370a48b0fab0d2';
+    this.queryUrl = 'http://api.soundcloud.com/tracks.json?' +
+                    'client_id=ea059f15567c5e19dd370a48b0fab0d2' + 
+                    '&filter=streamable';
   },
   render: function() {
     this.$el.html(Groovegrid.templates.search());
@@ -111,7 +132,8 @@ Groovegrid.views.Search = Backbone.View.extend({
     }, this);
     this.model.fetch({success: _.bind(function(response) {
       this.results = new Groovegrid.views.SearchResults({
-        collection: response.get('results')
+        collection: response.get('results'),
+        searchView: this
       }).render();
     }, this)});
   }
@@ -120,7 +142,10 @@ Groovegrid.views.Search = Backbone.View.extend({
 Groovegrid.models.Tile = Backbone.Model.extend();
 
 Groovegrid.collections.Tiles = Backbone.Collection.extend({
-  model: Groovegrid.models.Tile
+  model: Groovegrid.models.Tile,
+  url: function() {
+    return '/api/grids/' + this.gridName + '/tiles'
+  }
 });
 
 Groovegrid.models.Grid = Backbone.Model.extend({
@@ -129,6 +154,7 @@ Groovegrid.models.Grid = Backbone.Model.extend({
   },
   parse: function(response) {
     response.tiles = new Groovegrid.collections.Tiles(response.tiles);
+    response.tiles.gridName = this.gridName;
     return response;
   }
 });
@@ -147,6 +173,7 @@ Groovegrid.views.Tiles = Backbone.View.extend({
   el: '#tiles',
   initalize: function() {
     this.collection.on('reset', this.render, this);
+    this.collection.on('add', this.add, this);
   },
   add: function(model) {
     var view = new Groovegrid.views.Tile({

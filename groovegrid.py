@@ -19,10 +19,22 @@ class Grid(db.Document):
 class Tile(db.Document):
   grid_id = db.ObjectIdField()
   title = db.StringField()
+  artwork_url = db.StringField()
+  duration = db.IntField()
+  song_uri = db.StringField()
+  stream_url = db.StringField()
+  user = db.StringField()
+  song_id = db.IntField()
 
   def to_dict(self):
     return {'id': str(self.mongo_id),
+            'song_id': self.song_id,
             'title': self.title,
+            'artwork_url': self.artwork_url,
+            'duration': self.duration,
+            'song_uri': self.song_uri,
+            'stream_url': self.stream_url,
+            'user': self.user,
            }
 
 
@@ -46,6 +58,16 @@ def api_grid(grid_name=None):
     return jsonify({
         'grids': [grid.to_dict() for grid in grids],
       })
+
+@app.route('/api/grids/<grid_name>/tiles', methods=['POST'])
+def api_grid_tiles(grid_name):
+  if request.method.upper() == 'POST':
+    data = request.json
+    grid = Grid.query.filter_by(name=grid_name).first()
+    data['grid_id'] = str(grid.mongo_id)
+    tile = Tile(**data)
+    tile.save()
+    return jsonify(tile.to_dict())
 
 @app.route('/')
 @app.route('/<grid_name>')
