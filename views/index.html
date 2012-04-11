@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <link rel=stylesheet href=/static/css/groovegrid.css>
     <script type=text/javascript src=/static/js/jquery.js></script>
     <script type=text/javascript src=/static/js/underscore.js></script>
     <script type=text/javascript src=/static/js/underscore-string.js></script>
@@ -38,7 +39,11 @@
     </script>
 
     <script id=searchResult type=text/html>
-      <img src=<%- artwork_url %>>
+      <% if (artwork_url) { %>
+        <img class=albumart src=<%- artwork_url %>>
+      <% } else { %>
+        <img class=albumart src=/static/images/noalbumart.jpg>
+      <% } %>
       <span class=title><%- title %></span>
     </script>
 
