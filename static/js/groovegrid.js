@@ -171,7 +171,7 @@ Groovegrid.views.Tile = Backbone.View.extend({
 
 Groovegrid.views.Tiles = Backbone.View.extend({
   el: '#tiles',
-  initalize: function() {
+  initialize: function() {
     this.collection.on('reset', this.render, this);
     this.collection.on('add', this.add, this);
   },
