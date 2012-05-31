@@ -1,0 +1,2 @@
+recursive-include groovegrid/static *
+recursive-include groovegrid/views *
