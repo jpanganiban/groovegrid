@@ -13,6 +13,19 @@ class TestGridModel(BaseModelTestCase):
     db.session.commit()
     self.assertEquals(grid, Grid.query.filter_by(name='Test Grid').first())
 
+  def test_grid_tile_relationship(self):
+    """Grid model should have a proper one-to-many relationship with Tile."""
+    grid = Grid(name='Test Grid')
+    tile = Tile(name='Test Tile')
+    grid.tiles.append(tile)
+    db.session.add(tile)
+    db.session.add(grid)
+    db.session.commit()
+
+    q_grid = Grid.query.filter_by(name='Test Grid').first()
+    self.assertTrue(hasattr(q_grid, 'tiles'))
+    self.assertEqual(tile, q_grid.tiles[0])
+
 
 class TestTileModel(BaseModelTestCase):
 
