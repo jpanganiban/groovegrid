@@ -1,21 +1,7 @@
 from groovegrid.models import db
-from groovegrid.server import app
 from groovegrid.models.grid import Tile, Grid
+from tests.models import BaseModelTestCase
 import unittest
-
-
-class BaseModelTestCase(unittest.TestCase):
-
-  def setUp(self):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
-    db.init_app(app)
-    self.ctx = app.test_request_context()
-    self.ctx.push()
-    db.create_all()
-
-  def tearDown(self):
-    db.drop_all()
-    self.ctx.pop()
 
 
 class TestGridModel(BaseModelTestCase):
