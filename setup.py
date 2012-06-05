@@ -9,9 +9,13 @@ setup(name="Groovegrid",
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
+      entry_points={
+          'console_scripts': ['groovegrid.debug = groovegrid.server:debug']
+        },
       install_requires=[
           'flask',
           'flask-testing',
           'flask-sqlalchemy',
         ],
+      test_suite='tests.suite',
       )
