@@ -16,7 +16,7 @@ class TestGridModel(BaseModelTestCase):
 
 class TestTileModel(BaseModelTestCase):
 
-  def test_grid_model(self):
+  def test_tile_model(self):
     """Tile model should be able to write and query."""
     tile = Tile(name='Test Tile')
     db.session.add(tile)
