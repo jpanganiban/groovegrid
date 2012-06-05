@@ -17,7 +17,6 @@ class TestModelRequirements(unittest.TestCase):
     self.assertTrue(app.config.get('SQLALCHEMY_DATABASE_URI'))
 
 
-
 class BaseModelTestCase(unittest.TestCase):
   """Base model for testing models."""
 

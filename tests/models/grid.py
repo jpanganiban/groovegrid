@@ -50,7 +50,6 @@ class TestTileModel(BaseModelTestCase):
     self.assertEqual(grid, q_tile.grid)
 
 
-
 def suite():
   suite = unittest.TestSuite()
   suite.addTest(unittest.makeSuite(TestGridModel))
