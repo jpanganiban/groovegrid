@@ -11,3 +11,10 @@ class Tile(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   grid_id = db.Column(db.Integer, db.ForeignKey('grid.id'))
   name = db.Column(db.String(256))
+
+  def to_dict(self):
+    return {
+          'id': self.id,
+          'grid_id': self.grid_id,
+          'name': self.name,
+        }
