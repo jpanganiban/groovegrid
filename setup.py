@@ -18,4 +18,4 @@ setup(name="Groovegrid",
           'flask-sqlalchemy',
         ],
       test_suite='tests.suite',
-      )
+    )
