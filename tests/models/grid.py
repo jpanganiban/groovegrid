@@ -49,6 +49,17 @@ class TestTileModel(BaseModelTestCase):
     self.assertTrue(hasattr(q_tile, 'grid'))
     self.assertEqual(grid, q_tile.grid)
 
+  def test_to_dict(self):
+    """Tile to_dict method should return its attributes in dict form."""
+    tile = Tile(name='Test Tile')
+    dict_tile = {
+          'id': tile.id,
+          'grid_id': tile.grid_id,
+          'name': tile.name,
+        }
+
+    self.assertEqual(dict_tile, tile.to_dict())
+
 
 def suite():
   suite = unittest.TestSuite()
