@@ -6,6 +6,13 @@ class Grid(db.Model):
   name = db.Column(db.String(128))
   tiles = db.relationship('Tile', backref='grid')
 
+  def to_dict(self):
+    return {
+          'id': self.id,
+          'name': self.name,
+          'tiles': [tile.to_dict for tile in self.tiles],
+        }
+
 
 class Tile(db.Model):
   id = db.Column(db.Integer, primary_key=True)
