@@ -3,11 +3,6 @@ import unittest
 
 class TestModelRequirements(unittest.TestCase):
 
-  def test_sqlalchemy_module(self):
-    """Check if sqlalchemy module exists."""
-    from flask import ext
-    self.assertTrue(hasattr(ext, 'sqlalchemy'))
-
   def test_db_instance(self):
     """Check for db instance in the models package."""
     from groovegrid import models
