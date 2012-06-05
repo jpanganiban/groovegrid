@@ -26,6 +26,17 @@ class TestGridModel(BaseModelTestCase):
     self.assertTrue(hasattr(q_grid, 'tiles'))
     self.assertEqual(tile, q_grid.tiles[0])
 
+  def test_to_dict(self):
+    """Grid to_dict method should return its attributes in dict form."""
+    grid = Grid(name='Test Grid')
+    dict_grid = {
+          'id': grid.id,
+          'name': grid.name,
+          'tiles': [tile.to_dict() for tile in grid.tiles],
+        }
+
+    self.assertEqual(dict_grid, grid.to_dict())
+
 
 class TestTileModel(BaseModelTestCase):
 
