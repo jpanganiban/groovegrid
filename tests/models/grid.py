@@ -5,6 +5,7 @@ import unittest
 
 
 class TestGridModel(unittest.TestCase):
+
   def setUp(self):
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
     db.init_app(app)
@@ -22,6 +23,9 @@ class TestGridModel(unittest.TestCase):
     db.session.add(grid)
     db.session.commit()
     self.assertEquals(grid, Grid.query.filter_by(name='Test Grid').first())
+
+
+
 
 
 def suite():
