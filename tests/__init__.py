@@ -4,7 +4,7 @@ import unittest
 
 def iter_modules():
   """Returns a generator of test modules."""
-  for module in find_modules(__name__, recursive=True):
+  for module in find_modules(__name__, include_packages=True, recursive=True):
     mod = import_string(module)
     if hasattr(mod, 'suite'):
       yield mod.suite()
